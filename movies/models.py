@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Count
 
 
 class Actor(models.Model):
@@ -23,17 +24,19 @@ class Movie(models.Model):
     description = models.CharField(max_length=255, blank=True, null=True)
     director = models.ForeignKey(Director, on_delete=models.CASCADE)
     actor = models.ManyToManyField(Actor)
-    avg_rating = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
-    n_of_rates = models.IntegerField(blank=True, null=True)
 
     def count(self):
-        number = Rating.objects.filter(movie = self)
-        return len(number)
+        number = Rating.objects.filter(movie=self)
+        return 'number of rates: ' + str(len(number))
+
+    def get_rating(self):
+        return Rating.objects.filter(movie=self).aggregate(Avg("value"))
 
     def __str__(self):
         return self.title
+
 
 class Rating(models.Model):
     value = models.FloatField(blank=True, null=True)
@@ -41,4 +44,6 @@ class Rating(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user + ': ' + self.movie + ' (' + self.value + ")"
+        return self.user + ': ' + str(self.movie) + ' (' + str(self.value) + ")"
+
+
