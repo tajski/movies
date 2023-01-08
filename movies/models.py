@@ -18,7 +18,6 @@ class Director(models.Model):
 
 
 class Movie(models.Model):
-    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=45, blank=True, null=True)
     category = models.CharField(max_length=45, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
@@ -29,16 +28,17 @@ class Movie(models.Model):
     updated = models.DateTimeField(blank=True, null=True)
     n_of_rates = models.IntegerField(blank=True, null=True)
 
+    def count(self):
+        number = Rating.objects.filter(movie = self)
+        return len(number)
+
     def __str__(self):
         return self.title
 
-
 class Rating(models.Model):
-    id = models.IntegerField(primary_key=True)
     value = models.FloatField(blank=True, null=True)
     user = models.CharField(max_length=45, blank=True, null=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user + ': ' + self.movie + ' (' + self.value + ")"
-

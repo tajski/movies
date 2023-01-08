@@ -23,7 +23,11 @@ urlpatterns = [
     path('directors/', views.director_list),
     path('directors/<int:id>', views.directors_detail),
     path('actors/', views.actor_list),
-    path('actors/<int:id>', views.actors_detail)
+    path('actors/<int:id>', views.actors_detail),
+    path('movies/', views.movie_list),
+    path('movies/<int:id>', views.movies_detail),
+    path('ratings/', views.rating_list),
+    path('ratings/<int:id>', views.ratings_detail)
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
