@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import Avg, Count
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class Actor(models.Model):
@@ -20,9 +22,18 @@ class Director(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=45, blank=True, null=True)
-    category = models.CharField(max_length=45, blank=True, null=True)
+
+    class Category(models.TextChoices):
+        ACTION = _('Action')
+        DRAMA = _('Drama')
+        COMEDY = _('Comedy')
+    category = models.CharField(
+        max_length=20,
+        choices=Category.choices,
+        default=Category.ACTION,
+    )
     description = models.CharField(max_length=255, blank=True, null=True)
-    director = models.ForeignKey(Director, on_delete=models.CASCADE)
+    director = models.ManyToManyField(Director)
     actor = models.ManyToManyField(Actor)
     created = models.DateTimeField(blank=True, null=True)
     updated = models.DateTimeField(blank=True, null=True)
@@ -40,7 +51,7 @@ class Movie(models.Model):
 
 class Rating(models.Model):
     value = models.FloatField(blank=True, null=True)
-    user = models.CharField(max_length=45, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
     def __str__(self):
